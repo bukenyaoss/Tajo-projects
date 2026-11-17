@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAJO - Truth and Dare</title>
+<style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+  body { margin: 0; background: #FFF8DC; padding: 16px; padding-bottom: 80px; }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .logo { background: #FFD700; border: 2px solid #000; border-radius: 50%; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
+  .yellow-box { background: #FFD700; padding: 14px; border-radius: 10px; margin-top: 12px; font-weight: bold; }
+  .card { background: #fff; border-radius: 12px; padding: 14px; margin-top: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .link-row { display: flex; gap: 8px; margin-top: 10px; }
+  .link-row input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
+  .btn-yellow { background: #FFD700; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+  .btn-pink { background: #FFC0CB; border: none; padding: 16px; border-radius: 10px; font-weight: bold; flex: 1; font-size: 16px; cursor: pointer; }
+  .btn-gold { background: #FFD700; border: none; padding: 16px; border-radius: 10px; font-weight: bold; flex: 1; font-size: 16px; cursor: pointer; }
+  .btn-green { background: #C8F5D6; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+  .btn-grey { background: #E5E5E5; border: none; padding: 14px; border-radius: 10px; font-weight: bold; flex: 1; cursor: pointer; }
+  .btn-teal { background: #A8E6CF; border: none; padding: 14px; border-radius: 10px; font-weight: bold; flex: 1; cursor: pointer; }
+  .row { display: flex; gap: 10px; margin-top: 12px; }
+  .online { background: #FFF3CD; padding: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+  .avatar { background: #FFD700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+  .small { font-size: 13px; color: #555; }
+  .pink-text { color: #E91E63; font-weight: bold; letter-spacing: 1px; font-size: 12px; }
+  input.name-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; }
+  .live-badge { background: #25D366; color: white; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div><b>TAJO</b><div class="small">Developer group</div></div>
+  <div class="logo">T</div>
+</div>
+
+<div id="joinBox" class="card">
+  <b>Join TAJO - Truth and Dare</b>
+  <p class="small">Your game - https://tajo-worldgamescreate.vercel.app/</p>
+  <input id="playerName" class="name-input" placeholder="Type your name">
+  <input id="groupId" class="name-input" placeholder="Group number - example 51" value="51">
+  <button class="btn-yellow" style="width:100%; margin-top:10px; padding:14px;" onclick="joinGame()">Join Game</button>
+</div>
+
+<div id="gameBox" style="display:none;">
+  <div class="yellow-box" id="welcomeText">You are here as Tajo</div>
+
+  <div class="card">
+    <b>Your 2 Links</b>
+    <div class="link-row"><input id="link1" readonly><button class="btn-yellow" onclick="copyLink('link1')">Copy</button></div>
+    <div class="link-row"><input id="link2" readonly><button class="btn-yellow" onclick="copyLink('link2')">Copy</button></div>
+    <p class="small">This is YOUR group's link. Share it ONLY to people you want in YOUR group. Each group has its own number link.</p>
+  </div>
+
+  <div class="card">
+    <b>AT THE TABLE - WHO IS ONLINE</b>
+    <div id="playersList"></div>
+    <div class="row">
+      <button class="btn-teal" onclick="startVideo()">Video - Try 16 / Safe 7 - 1 Hour</button>
+      <button class="btn-grey" onclick="endGame()">End</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="pink-text">A LITTLE GAME, A LOT OF STORIES</div>
+    <h2 style="margin:8px 0;">Pick your side.</h2>
+    <p class="small">Pick ONCE - Then ALL lock until done</p>
+    <div class="row">
+      <button class="btn-pink" id="truthBtn" onclick="pick('Truth')">Truth</button>
+      <button class="btn-gold" id="dareBtn" onclick="pick('Dare')">Dare</button>
+    </div>
+    <div class="card" style="background:#F8F8F8; margin-top:12px;"><b>Last Turn: </b><span id="lastTurn">None</span></div>
+    <div id="questionBox" class="card" style="display:none; background:#FFF3CD;"><b id="questionText"></b></div>
+    <button class="btn-green" onclick="nextPerson()">I Answered - Next Person (UNLOCKS ALL)</button>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <span class="live-badge">● LIVE ON VERCEL</span>
+    <p class="small" style="margin-top:10px;">tajo-worldgamescreate.vercel.app</p>
+    <button class="btn-yellow" style="width:100%;" onclick="shareGame()">Share Game Link</button>
+  </div>
+</div>
+
+<script>
+let myName = "";
+let myGroup = "51";
+let myPick = "";
+
+function joinGame(){
+  myName = document.getElementById('playerName').value.trim();
+  myGroup = document.getElementById('groupId').value.trim() || "51";
+  if(!myName){ alert("Please type your name"); return; }
+  document.getElementById('joinBox').style.display = 'none';
+  document.getElementById('gameBox').style.display = 'block';
+  document.getElementById('welcomeText').innerText = "You are here as " + myName + " (" + myGroup + ") Captain of Group " + myGroup + " | Group " + myGroup + " - Captain: " + myName;
+  document.getElementById('link1').value = "https://tajo-worldgamescreate.vercel.app/";
+  document.getElementById('link2').value = "https://tajo-worldgamescreate.vercel.app/group/" + myGroup;
+  updatePlayers();
+}
+
+function updatePlayers(){
+  document.getElementById('playersList').innerHTML = '<div class="online"><div class="avatar">' + myName.charAt(0).toUpperCase() + '</div><div><b>' + myName + ' (' + myGroup + ') Captain</b><div class="small">Online</div></div></div><div style="background:#C8F5D6; padding:10px; border-radius:8px; margin-top:8px; font-weight:bold;">1 Online in Group ' + myGroup + ': ' + myName + '</div>';
+}
+
+function copyLink(id){
+  let el = document.getElementById(id);
+  el.select(); document.execCommand('copy');
+  alert("Link copied!");
+}
+
+function shareGame(){
+  let url = "https://tajo-worldgamescreate.vercel.app/";
+  if(navigator.share){ navigator.share({title:"TAJO Truth and Dare", text:"Join my TAJO game!", url:url}); }
+  else { prompt("Copy this link:", url); }
+}
+
+const truths = ["What is your biggest secret?", "Who is your crush?", "What is the most embarrassing thing you have done?", "What is one thing you have never told anyone?", "What is your biggest fear?", "Have you ever lied to your best friend?", "What is the craziest thing you have done for love?", "Who do you secretly stalk on social media?"];
+const dares = ["Dance for 30 seconds", "Sing a song out loud", "Do 10 push-ups", "Call someone and say you miss them", "Do your best animal impression", "Text your crush 'hi'", "Speak in a funny accent for 1 minute", "Let the group choose your profile pic for 1 hour"];
+
+function pick(type){
+  if(myPick){ alert("You already picked. Press I Answered to unlock."); return; }
+  myPick = type;
+  let q = type === 'Truth' ? truths[Math.floor(Math.random()*truths.length)] : dares[Math.floor(Math.random()*dares.length)];
+  document.getElementById('questionBox').style.display = 'block';
+  document.getElementById('questionText').innerText = type + ": " + q;
+  document.getElementById('lastTurn').innerText = myName + " picked " + type;
+  document.getElementById('truthBtn').style.opacity = "0.5";
+  document.getElementById('dareBtn').style.opacity = "0.5";
+}
+
+function nextPerson(){
+  myPick = "";
+  document.getElementById('questionBox').style.display = 'none';
+  document.getElementById('truthBtn').style.opacity = "1";
+  document.getElementById('dareBtn').style.opacity = "1";
+  alert("Unlocked! Next person can pick now.");
+}
+
+function startVideo(){ alert("Video mode started - 1 Hour"); }
+function endGame(){ if(confirm("End game?")){ location.reload(); } }
+</script>
+</body>
+</html>
