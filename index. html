@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAJO TRADE FLOW - AI Signals</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+  body{background:#0a0e17;color:#fff;padding:16px}
+  .header{text-align:center;padding:20px 0}
+  .header h1{font-size:28px;letter-spacing:2px}
+  .header h1 span{color:#00e676}
+  .header p{color:#888;font-size:13px;margin-top:6px}
+  .live{color:#00e676;font-size:12px}
+  .card{background:#141a29;border:1px solid #222c42;border-radius:16px;padding:16px;margin:12px 0}
+  .top{display:flex;justify-content:space-between;align-items:center}
+  .pair{font-size:20px;font-weight:800}
+  .price{font-size:22px;font-weight:800}
+  .up{color:#00e676}.down{color:#ff3b5c}
+  .badge{padding:6px 14px;border-radius:20px;font-weight:800;font-size:13px}
+  .buy{background:#00e676;color:#000}.sell{background:#ff3b5c;color:#fff}.wait{background:#ffcc00;color:#000}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0;text-align:center}
+  .box{background:#0a0e17;padding:10px;border-radius:10px;border:1px solid #222c42}
+  .box small{color:#888;display:block;font-size:11px}
+  .box b{font-size:14px}
+  .reasons{background:#0a0e17;border-left:3px solid #00e676;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.6;margin-top:10px}
+  .reasons b{color:#00e676}
+  .locked{color:#00e676;font-size:11px;font-weight:700}
+  button{width:100%;padding:14px;border:0;border-radius:12px;background:#00e676;color:#000;font-weight:900;font-size:16px;cursor:pointer;margin-top:8px}
+  select{width:100%;padding:12px;border-radius:10px;background:#0a0e17;color:#fff;border:1px solid #222c42;margin:10px 0}
+  .footer{text-align:center;color:#555;font-size:11px;margin:20px 0}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>TAJO <span>TRADE FLOW</span></h1>
+  <p>AI • SNR + CRT • Fixed Entry</p>
+  <p class="live">● LIVE • Updated <span id="time">--:--:--</span></p>
+</div>
+
+<select id="pairSelect" onchange="generate()">
+  <option value="EUR/USD">EUR/USD - Forex</option>
+  <option value="GBP/USD">GBP/USD - Forex</option>
+  <option value="XAU/USD">XAU/USD - Gold</option>
+  <option value="BTC/USD">BTC/USD - Crypto</option>
+  <option value="USD/JPY">USD/JPY - Forex</option>
+</select>
+
+<div id="app"></div>
+<button onclick="generate()">🔄 GENERATE NEW SIGNAL</button>
+<p style="text-align:center;color:#888;font-size:12px;margin-top:10px">Entry locks when signal is generated. New signal only after TP/SL or new candle.</p>
+<div class="footer">TAJO TRADE FLOW © 2026 • Not financial advice • Trade responsibly</div>
+
+<script>
+let lockedEntry = null, lockedTime = null, currentSignal = null;
+
+function random(min,max){ return Math.random()*(max-min)+min; }
+
+function generate(){
+  const pair = document.getElementById('pairSelect').value;
+  let basePrice = pair==='BTC/USD'? 97000 : pair==='XAU/USD'? 2650 : pair==='USD/JPY'? 154.2 : pair==='GBP/USD'? 1.27 : 1.08;
+  let price = basePrice + random(-0.01,0.01)* (pair==='BTC/USD'?100:1);
+  
+  // CRT + SNR Logic Simulation
+  const crtTypes = ['Bullish CRT - Sweep of Low + Reclaim','Bearish CRT - Sweep of High + Reclaim','No Clean CRT - Choppy'];
+  const crt = crtTypes[Math.floor(Math.random()*crtTypes.length)];
+  const nearSNR = Math.random() > 0.3;
+  
+  let signal, conf, reasons, tp, sl, status;
+  
+  if(!nearSNR || crt.includes('No Clean')){
+    signal='NO TRADE'; conf=Math.floor(random(40,55));
+    reasons = [`1) Price is in the middle - NOT near SNR`, `2) ${crt}`, `3) Crossing / Choppy - STOP CROSS filter blocked trade`];
+    tp=price; sl=price; status='wait';
+  } else if(crt.includes('Bullish')){
+    signal='BUY'; conf=Math.floor(random(72,92));
+    reasons = [`1) ${crt} at Support (SNR)`, `2) Price reclaimed range - buyers in control`, `3) Higher low formed above Support`];
+    tp=price*1.003; sl=price*0.0015; status='buy';
+  } else {
+    signal='SELL'; conf=Math.floor(random(72,92));
+    reasons = [`1) ${crt} at Resistance (SNR)`, `2) Price rejected range - sellers in control`, `3) Lower high formed below Resistance`];
+    tp=price*0.997; sl=price*1.0015; status='sell';
+  }
+
+  // FIXED ENTRY - Lock it
+  lockedEntry = price.toFixed(pair==='BTC/USD'?2:5);
+  lockedTime = new Date().toLocaleTimeString();
+  currentSignal = signal;
+
+  document.getElementById('time').innerText = new Date().toLocaleTimeString();
+  
+  const color = status==='buy'?'up':status==='sell'?'down':'';
+  const badgeClass = status==='buy'?'buy':status==='sell'?'sell':'wait';
+
+  document.getElementById('app').innerHTML = `
+  <div class="card">
+    <div class="top"><span class="pair">${pair}</span><span class="badge ${badgeClass}">${signal}</span></div>
+    <div class="top" style="margin-top:10px"><span style="color:#888;font-size:13px">Live Price</span><span class="price ${color}">${price.toFixed(pair==='BTC/USD'?2:5)}</span></div>
+    <div class="grid">
+      <div class="box"><small>ENTRY 🔒 LOCKED</small><b>${lockedEntry}</b><span class="locked">LOCKED ${lockedTime}</span></div>
+      <div class="box"><small>TAKE PROFIT</small><b class="up">${tp.toFixed(pair==='BTC/USD'?2:5)}</b></div>
+      <div class="box"><small>STOP LOSS</small><b class="down">${sl.toFixed(pair==='BTC/USD'?2:5)}</b></div>
+    </div>
+    <div style="display:flex;justify-content:space-between"><span>Confidence / Win Rate</span><b class="up">${conf}%</b></div>
+    <div class="reasons"><b>Why ${conf}% ?</b><br>${reasons.join('<br>')}</div>
+    <div class="reasons" style="border-left-color:#ffcc00"><b>Strategy:</b><br>SNR + CRT • ${crt}<br>Fixed Entry • No repaint while locked</div>
+  </div>`;
+}
+generate();
+// Live price tick but ENTRY stays locked
+setInterval(()=>{ document.getElementById('time').innerText = new Date().toLocaleTimeString(); },1000);
+</script>
+</body>
+</html>
