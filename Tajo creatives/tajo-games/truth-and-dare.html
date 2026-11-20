@@ -26,6 +26,10 @@
   .pink-text { color: #E91E63; font-weight: bold; letter-spacing: 1px; font-size: 12px; }
   input.name-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; }
   .live-badge { background: #25D366; color: white; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+  .trust-bar { background: #FF0080; color: white; padding: 12px; border-radius: 12px; margin-top: 12px; text-align: center; }
+  .trust-bar b { font-size: 17px; }
+  .trust-progress { background: rgba(255,255,255,0.35); height: 10px; border-radius: 10px; margin-top: 8px; overflow: hidden; }
+  .trust-fill { background: #FFD700; height: 10px; border-radius: 10px; width: 5%; }
 </style>
 </head>
 <body>
@@ -35,12 +39,25 @@
   <div class="logo">T</div>
 </div>
 
+<!-- HOW MANY JOINED - DECREASING FREE NUMBERS -->
+<div class="trust-bar">
+  🔥 <b><span id="totalJoined">1,247</span> People Already Joined!</b><br>
+  <span style="font-size:13px;">👥 <span id="groupJoined">0</span> / 10 Joined in Group <span id="groupJoinedNum">49</span> • 🟢 <span id="onlineNow">1</span> Online Now</span>
+  <div style="font-size:14px; margin-top:8px; font-weight:bold; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px;">
+    🟢 <span id="freeGroupsText">49 Groups Left FREE</span><br>
+    🔥 <span id="spotsLeftText">9 Spots Left in Group 49</span>
+  </div>
+  <div class="trust-progress"><div class="trust-fill" id="trustFill"></div></div>
+  <div style="font-size:12px; margin-top:6px;">Join now - Don't be left out! • <span id="todayJoined">12</span> joined today</div>
+</div>
+
 <div id="joinBox" class="card">
   <b>Join TAJO - Truth and Dare</b>
   <p class="small">Your game - https://tajo-worldgamescreate.vercel.app/</p>
   <input id="playerName" class="name-input" placeholder="Type your name">
-  <input id="groupId" class="name-input" placeholder="Group number - example 51" value="51">
+  <input id="groupId" class="name-input" placeholder="Group number - example 49" value="49">
   <button class="btn-yellow" style="width:100%; margin-top:10px; padding:14px;" onclick="joinGame()">Join Game</button>
+  <p class="small" style="text-align:center; margin-top:10px;">👀 <span id="joinPageCount">1,247</span> people have already joined TAJO WORLD • <span id="freeGroupsText2">49 Groups Left</span></p>
 </div>
 
 <div id="gameBox" style="display:none;">
@@ -54,7 +71,7 @@
   </div>
 
   <div class="card">
-    <b>AT THE TABLE - WHO IS ONLINE</b>
+    <b>AT THE TABLE - WHO IS ONLINE (<span id="tableCount">1</span> / 10) - <span id="spotsLeftTable">9 Spots Left</span></b>
     <div id="playersList"></div>
     <div class="row">
       <button class="btn-teal" onclick="startVideo()">Video - Try 16 / Safe 7 - 1 Hour</button>
@@ -84,23 +101,79 @@
 
 <script>
 let myName = "";
-let myGroup = "51";
+let myGroup = "49";
 let myPick = "";
+let BASE_JOINED = 1247;
+let TOTAL_GROUPS = 50;
+let TOTAL_SPOTS = 10;
+
+function getAllPlayers(){
+  try{ return JSON.parse(localStorage.getItem('tajo_all_players') || '[]'); }catch(e){ return []; }
+}
+function saveAllPlayers(list){ localStorage.setItem('tajo_all_players', JSON.stringify(list)); }
+
+function updateTrustBar(){
+  let all = getAllPlayers();
+  let total = BASE_JOINED + all.length;
+
+  // How many in MY group 49
+  let inMyGroup = all.filter(p => String(p.group) === String(myGroup));
+  let groupCount = inMyGroup.length;
+  if(myName && !inMyGroup.find(p=>p.name===myName)) groupCount = groupCount + 1;
+
+  // MATH - DECREASING:
+  // Free Groups = 50 - Occupied Groups. 1 joins = 49 left, 2 joins = 48 left
+  let occupiedGroups = new Set(all.map(p=>String(p.group))).size;
+  if(myName && !all.find(p=>String(p.group)===String(myGroup))) occupiedGroups = occupiedGroups + 1;
+  if(occupiedGroups === 0) occupiedGroups = 1;
+  let freeGroups = TOTAL_GROUPS - occupiedGroups;
+
+  // Spots Left in Group 49 = 10 - Joined. 1 joins = 9 left, 2 joins = 8 left
+  let spotsLeft = TOTAL_SPOTS - groupCount;
+  if(spotsLeft < 0) spotsLeft = 0;
+
+  document.getElementById('totalJoined').innerText = total.toLocaleString();
+  document.getElementById('joinPageCount').innerText = total.toLocaleString();
+  document.getElementById('groupJoined').innerText = groupCount;
+  document.getElementById('groupJoinedNum').innerText = myGroup;
+  document.getElementById('tableCount').innerText = Math.max(1, groupCount);
+  document.getElementById('onlineNow').innerText = Math.max(1, groupCount);
+  document.getElementById('todayJoined').innerText = 12 + all.length;
+  document.getElementById('freeGroupsText').innerText = freeGroups + " Groups Left FREE";
+  document.getElementById('freeGroupsText2').innerText = freeGroups + " Groups Left";
+  document.getElementById('spotsLeftText').innerText = spotsLeft + " Spots Left in Group " + myGroup;
+  document.getElementById('spotsLeftTable').innerText = spotsLeft + " Spots Left";
+  let pct = Math.min(95, 5 + all.length * 2);
+  document.getElementById('trustFill').style.width = pct + '%';
+}
 
 function joinGame(){
   myName = document.getElementById('playerName').value.trim();
-  myGroup = document.getElementById('groupId').value.trim() || "51";
+  myGroup = document.getElementById('groupId').value.trim() || "49";
   if(!myName){ alert("Please type your name"); return; }
+  let all = getAllPlayers();
+  if(!all.find(p=>p.name===myName && String(p.group)===String(myGroup))){
+    all.push({name: myName, group: myGroup, time: Date.now()});
+    saveAllPlayers(all);
+  }
   document.getElementById('joinBox').style.display = 'none';
   document.getElementById('gameBox').style.display = 'block';
   document.getElementById('welcomeText').innerText = "You are here as " + myName + " (" + myGroup + ") Captain of Group " + myGroup + " | Group " + myGroup + " - Captain: " + myName;
   document.getElementById('link1').value = "https://tajo-worldgamescreate.vercel.app/";
   document.getElementById('link2').value = "https://tajo-worldgamescreate.vercel.app/group/" + myGroup;
+  updateTrustBar();
   updatePlayers();
 }
 
 function updatePlayers(){
-  document.getElementById('playersList').innerHTML = '<div class="online"><div class="avatar">' + myName.charAt(0).toUpperCase() + '</div><div><b>' + myName + ' (' + myGroup + ') Captain</b><div class="small">Online</div></div></div><div style="background:#C8F5D6; padding:10px; border-radius:8px; margin-top:8px; font-weight:bold;">1 Online in Group ' + myGroup + ': ' + myName + '</div>';
+  let all = getAllPlayers();
+  let inMyGroup = all.filter(p => String(p.group) === String(myGroup));
+  if(!inMyGroup.find(p=>p.name===myName)) inMyGroup.unshift({name: myName, group: myGroup});
+  let spotsLeft = Math.max(0, TOTAL_SPOTS - inMyGroup.length);
+  let html = inMyGroup.map(p => '<div class="online"><div class="avatar">' + p.name.charAt(0).toUpperCase() + '</div><div><b>' + p.name + ' (' + myGroup + ')' + (p.name===myName ? ' Captain' : '') + '</b><div class="small">Online</div></div></div>').join('');
+  html += '<div style="background:#C8F5D6; padding:10px; border-radius:8px; margin-top:8px; font-weight:bold;">' + inMyGroup.length + ' Online in Group ' + myGroup + ': ' + inMyGroup.map(p=>p.name).join(', ') + ' - ' + spotsLeft + ' Spots Left</div>';
+  html += '<div style="background:#FFF3CD; padding:10px; border-radius:8px; margin-top:8px; font-size:13px;">🔥 Total in TAJO WORLD: <b>' + (BASE_JOINED + all.length).toLocaleString() + ' joined</b> - You are part of it!</div>';
+  document.getElementById('playersList').innerHTML = html;
 }
 
 function copyLink(id){
@@ -111,7 +184,7 @@ function copyLink(id){
 
 function shareGame(){
   let url = "https://tajo-worldgamescreate.vercel.app/";
-  if(navigator.share){ navigator.share({title:"TAJO Truth and Dare", text:"Join my TAJO game!", url:url}); }
+  if(navigator.share){ navigator.share({title:"TAJO Truth and Dare", text:"Join my TAJO game! " + (BASE_JOINED + getAllPlayers().length) + " people already joined! Only " + (TOTAL_SPOTS - getAllPlayers().filter(p=>String(p.group)===String(myGroup)).length) + " spots left in Group " + myGroup, url:url}); }
   else { prompt("Copy this link:", url); }
 }
 
@@ -139,6 +212,10 @@ function nextPerson(){
 
 function startVideo(){ alert("Video mode started - 1 Hour"); }
 function endGame(){ if(confirm("End game?")){ location.reload(); } }
+
+let params = new URLSearchParams(location.search);
+if(params.get('group')){ document.getElementById('groupId').value = params.get('group'); myGroup = params.get('group'); }
+updateTrustBar();
 </script>
 </body>
 </html>
