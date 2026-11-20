@@ -3,219 +3,134 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAJO - Truth and Dare</title>
+<title>TAJO WORLD - Join The Game</title>
 <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
-  body { margin: 0; background: #FFF8DC; padding: 16px; padding-bottom: 80px; }
-  .top { display: flex; justify-content: space-between; align-items: center; }
-  .logo { background: #FFD700; border: 2px solid #000; border-radius: 50%; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
-  .yellow-box { background: #FFD700; padding: 14px; border-radius: 10px; margin-top: 12px; font-weight: bold; }
-  .card { background: #fff; border-radius: 12px; padding: 14px; margin-top: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-  .link-row { display: flex; gap: 8px; margin-top: 10px; }
-  .link-row input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
-  .btn-yellow { background: #FFD700; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-  .btn-pink { background: #FFC0CB; border: none; padding: 16px; border-radius: 10px; font-weight: bold; flex: 1; font-size: 16px; cursor: pointer; }
-  .btn-gold { background: #FFD700; border: none; padding: 16px; border-radius: 10px; font-weight: bold; flex: 1; font-size: 16px; cursor: pointer; }
-  .btn-green { background: #C8F5D6; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; }
-  .btn-grey { background: #E5E5E5; border: none; padding: 14px; border-radius: 10px; font-weight: bold; flex: 1; cursor: pointer; }
-  .btn-teal { background: #A8E6CF; border: none; padding: 14px; border-radius: 10px; font-weight: bold; flex: 1; cursor: pointer; }
-  .row { display: flex; gap: 10px; margin-top: 12px; }
-  .online { background: #FFF3CD; padding: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; margin-top: 8px; }
-  .avatar { background: #FFD700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-  .small { font-size: 13px; color: #555; }
-  .pink-text { color: #E91E63; font-weight: bold; letter-spacing: 1px; font-size: 12px; }
-  input.name-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; }
-  .live-badge { background: #25D366; color: white; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
-  .trust-bar { background: #FF0080; color: white; padding: 12px; border-radius: 12px; margin-top: 12px; text-align: center; }
-  .trust-bar b { font-size: 17px; }
-  .trust-progress { background: rgba(255,255,255,0.35); height: 10px; border-radius: 10px; margin-top: 8px; overflow: hidden; }
-  .trust-fill { background: #FFD700; height: 10px; border-radius: 10px; width: 5%; }
+* { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+body { background:#0f0f1a; color:white; padding:20px; text-align:center; }
+.top { background:#ff4757; color:white; padding:10px; border-radius:10px; font-weight:bold; margin-bottom:15px; }
+h1 { font-size:32px; margin:10px 0; }
+h1 span { color:#00ff88; }
+.subtitle { color:#aaa; margin-bottom:20px; }
+.card { background:#1e1e2e; border:1px solid #333; border-radius:20px; padding:25px; max-width:450px; margin:0 auto 20px auto; text-align:left; }
+.card h2 { font-size:22px; margin-bottom:5px; }
+.card p { color:#ccc; margin:8px 0; font-size:15px; }
+.big-green { color:#00ff88; font-weight:bold; font-size:26px; }
+.big-white { font-weight:bold; font-size:26px; }
+.progress-bar { background:#333; height:12px; border-radius:10px; overflow:hidden; margin:12px 0; }
+.progress-fill { background:#00ff88; height:100%; width:2%; }
+.stats { display:flex; justify-content:space-between; background:#2a2a3a; padding:12px; border-radius:10px; margin:12px 0; text-align:center; }
+.stats div b { display:block; font-size:20px; }
+.stats div span { font-size:12px; color:#aaa; }
+.group-card { background:#2a2a3a; border:2px solid #00ff88; border-radius:15px; padding:18px; margin-top:15px; }
+.group-card h3 { color:#00ff88; margin-bottom:8px; }
+.join-btn { background:#00ff88; color:#000; border:none; width:100%; padding:15px; border-radius:12px; font-size:18px; font-weight:bold; cursor:pointer; margin-top:15px; }
+.join-btn:active { transform:scale(0.98); }
+.join-btn:disabled { background:#555; color:#999; }
+.small { font-size:13px; color:#888; margin-top:10px; text-align:center; }
+.urgent { background:#fff3cd; color:#000; padding:10px; border-radius:10px; margin-top:15px; font-weight:bold; font-size:14px; text-align:center; }
+#msg { text-align:center; color:#00ff88; font-weight:bold; margin-top:10px; }
+.games { display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:450px; margin:0 auto; }
+.game { background:#1e1e2e; padding:18px; border-radius:15px; }
+.game span { font-size:30px; }
+.footer { color:#666; font-size:12px; margin-top:25px; }
 </style>
 </head>
 <body>
 
-<div class="top">
-  <div><b>TAJO</b><div class="small">Developer group</div></div>
-  <div class="logo">T</div>
+<div class="top">🔥 LIVE NOW - 1,247 People Already Joined!</div>
+
+<h1>🌍 TAJO <span>WORLD</span></h1>
+<p class="subtitle">The Biggest Games Community in Uganda<br>Truth or Dare • Would You Rather • Riddles & More</p>
+
+<div class="card">
+<h2>🎮 Join TAJO WORLD Games</h2>
+<p>Be part of the fastest growing games community. Groups are filling fast!</p>
+
+<p><span class="big-green" id="freeGroupsTop">49</span> <b>Groups Left FREE</b></p>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<p><span id="percentText">2%</span> Full - <span id="freeGroupsText">49</span> still FREE!</p>
+
+<div class="stats">
+<div><b id="totalGroups">50</b><span>Total</span></div>
+<div><b id="occupiedGroups">1</b><span>Occupied</span></div>
+<div><b id="freeGroups">49</b><span>Free</span></div>
 </div>
 
-<!-- HOW MANY JOINED - DECREASING FREE NUMBERS -->
-<div class="trust-bar">
-  🔥 <b><span id="totalJoined">1,247</span> People Already Joined!</b><br>
-  <span style="font-size:13px;">👥 <span id="groupJoined">0</span> / 10 Joined in Group <span id="groupJoinedNum">49</span> • 🟢 <span id="onlineNow">1</span> Online Now</span>
-  <div style="font-size:14px; margin-top:8px; font-weight:bold; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px;">
-    🟢 <span id="freeGroupsText">49 Groups Left FREE</span><br>
-    🔥 <span id="spotsLeftText">9 Spots Left in Group 49</span>
-  </div>
-  <div class="trust-progress"><div class="trust-fill" id="trustFill"></div></div>
-  <div style="font-size:12px; margin-top:6px;">Join now - Don't be left out! • <span id="todayJoined">12</span> joined today</div>
+<div class="group-card">
+<h3>⭐ Group 49 - Almost Full!</h3>
+<p>Every group has <b>16 members</b> - same for all groups, constant.</p>
+<p><span class="big-white" id="spotsLeft">15</span> <b>Spots Left in Group 49</b></p>
+<p><span id="joinedCount">1</span> member joined • <span id="leftCount">15</span> empty chairs left out of 16</p>
+<p style="font-size:13px; color:#aaa;">🪑 16 chairs in Group 49. 1 person is sitting. 15 chairs are still empty for your friends.</p>
 </div>
 
-<div id="joinBox" class="card">
-  <b>Join TAJO - Truth and Dare</b>
-  <p class="small">Your game - https://tajo-worldgamescreate.vercel.app/</p>
-  <input id="playerName" class="name-input" placeholder="Type your name">
-  <input id="groupId" class="name-input" placeholder="Group number - example 49" value="49">
-  <button class="btn-yellow" style="width:100%; margin-top:10px; padding:14px;" onclick="joinGame()">Join Game</button>
-  <p class="small" style="text-align:center; margin-top:10px;">👀 <span id="joinPageCount">1,247</span> people have already joined TAJO WORLD • <span id="freeGroupsText2">49 Groups Left</span></p>
+<button class="join-btn" id="joinBtn" onclick="joinGroup()">JOIN GROUP 49 NOW 🚀</button>
+<p id="msg"></p>
+
+<div class="urgent">⚡ Hurry! Only <span id="urgentSpots">15</span> spots left in Group 49. When it's full, you go to Group 50.</div>
 </div>
 
-<div id="gameBox" style="display:none;">
-  <div class="yellow-box" id="welcomeText">You are here as Tajo</div>
-
-  <div class="card">
-    <b>Your 2 Links</b>
-    <div class="link-row"><input id="link1" readonly><button class="btn-yellow" onclick="copyLink('link1')">Copy</button></div>
-    <div class="link-row"><input id="link2" readonly><button class="btn-yellow" onclick="copyLink('link2')">Copy</button></div>
-    <p class="small">This is YOUR group's link. Share it ONLY to people you want in YOUR group. Each group has its own number link.</p>
-  </div>
-
-  <div class="card">
-    <b>AT THE TABLE - WHO IS ONLINE (<span id="tableCount">1</span> / 10) - <span id="spotsLeftTable">9 Spots Left</span></b>
-    <div id="playersList"></div>
-    <div class="row">
-      <button class="btn-teal" onclick="startVideo()">Video - Try 16 / Safe 7 - 1 Hour</button>
-      <button class="btn-grey" onclick="endGame()">End</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="pink-text">A LITTLE GAME, A LOT OF STORIES</div>
-    <h2 style="margin:8px 0;">Pick your side.</h2>
-    <p class="small">Pick ONCE - Then ALL lock until done</p>
-    <div class="row">
-      <button class="btn-pink" id="truthBtn" onclick="pick('Truth')">Truth</button>
-      <button class="btn-gold" id="dareBtn" onclick="pick('Dare')">Dare</button>
-    </div>
-    <div class="card" style="background:#F8F8F8; margin-top:12px;"><b>Last Turn: </b><span id="lastTurn">None</span></div>
-    <div id="questionBox" class="card" style="display:none; background:#FFF3CD;"><b id="questionText"></b></div>
-    <button class="btn-green" onclick="nextPerson()">I Answered - Next Person (UNLOCKS ALL)</button>
-  </div>
-
-  <div class="card" style="text-align:center;">
-    <span class="live-badge">● LIVE ON VERCEL</span>
-    <p class="small" style="margin-top:10px;">tajo-worldgamescreate.vercel.app</p>
-    <button class="btn-yellow" style="width:100%;" onclick="shareGame()">Share Game Link</button>
-  </div>
+<div class="games">
+<div class="game"><span>😈</span><br><b>Truth or Dare</b><br><small>Play Now</small></div>
+<div class="game"><span>🤔</span><br><b>Would You Rather</b><br><small>Play Now</small></div>
+<div class="game"><span>🧩</span><br><b>Riddles</b><br><small>Play Now</small></div>
+<div class="game"><span>🎲</span><br><b>Lucky Games</b><br><small>Play Now</small></div>
 </div>
+
+<p class="footer">© 2026 TAJO WORLD • Made in Uganda 🇺🇬<br>Total Capacity: 50 Groups × 16 Members = 800 Players</p>
 
 <script>
-let myName = "";
-let myGroup = "49";
-let myPick = "";
-let BASE_JOINED = 1247;
-let TOTAL_GROUPS = 50;
-let TOTAL_SPOTS = 10;
+// ===== TAJO WORLD SETTINGS - CONSTANT FOR ALL GROUPS =====
+const TOTAL_GROUPS = 50;
+const GROUP_SIZE = 16; // 16 members in EVERY group - constant, never changes
+let occupiedGroups = 1;
+let groupCount = 1; // 1 person already in Group 49
+let totalJoined = 1247;
 
-function getAllPlayers(){
-  try{ return JSON.parse(localStorage.getItem('tajo_all_players') || '[]'); }catch(e){ return []; }
-}
-function saveAllPlayers(list){ localStorage.setItem('tajo_all_players', JSON.stringify(list)); }
+function updateDisplay() {
+  let freeGroups = TOTAL_GROUPS - occupiedGroups; // 50 - 1 = 49
+  let spotsLeft = GROUP_SIZE - groupCount; // 16 - 1 = 15
 
-function updateTrustBar(){
-  let all = getAllPlayers();
-  let total = BASE_JOINED + all.length;
+  document.getElementById('freeGroupsTop').innerText = freeGroups;
+  document.getElementById('freeGroups').innerText = freeGroups;
+  document.getElementById('freeGroupsText').innerText = freeGroups;
+  document.getElementById('occupiedGroups').innerText = occupiedGroups;
+  document.getElementById('totalGroups').innerText = TOTAL_GROUPS;
 
-  // How many in MY group 49
-  let inMyGroup = all.filter(p => String(p.group) === String(myGroup));
-  let groupCount = inMyGroup.length;
-  if(myName && !inMyGroup.find(p=>p.name===myName)) groupCount = groupCount + 1;
+  document.getElementById('spotsLeft').innerText = spotsLeft;
+  document.getElementById('joinedCount').innerText = groupCount;
+  document.getElementById('leftCount').innerText = spotsLeft;
+  document.getElementById('urgentSpots').innerText = spotsLeft;
 
-  // MATH - DECREASING:
-  // Free Groups = 50 - Occupied Groups. 1 joins = 49 left, 2 joins = 48 left
-  let occupiedGroups = new Set(all.map(p=>String(p.group))).size;
-  if(myName && !all.find(p=>String(p.group)===String(myGroup))) occupiedGroups = occupiedGroups + 1;
-  if(occupiedGroups === 0) occupiedGroups = 1;
-  let freeGroups = TOTAL_GROUPS - occupiedGroups;
+  let percent = Math.round((occupiedGroups / TOTAL_GROUPS) * 100);
+  document.getElementById('percentText').innerText = percent + '%';
+  document.getElementById('progressFill').style.width = percent + '%';
 
-  // Spots Left in Group 49 = 10 - Joined. 1 joins = 9 left, 2 joins = 8 left
-  let spotsLeft = TOTAL_SPOTS - groupCount;
-  if(spotsLeft < 0) spotsLeft = 0;
-
-  document.getElementById('totalJoined').innerText = total.toLocaleString();
-  document.getElementById('joinPageCount').innerText = total.toLocaleString();
-  document.getElementById('groupJoined').innerText = groupCount;
-  document.getElementById('groupJoinedNum').innerText = myGroup;
-  document.getElementById('tableCount').innerText = Math.max(1, groupCount);
-  document.getElementById('onlineNow').innerText = Math.max(1, groupCount);
-  document.getElementById('todayJoined').innerText = 12 + all.length;
-  document.getElementById('freeGroupsText').innerText = freeGroups + " Groups Left FREE";
-  document.getElementById('freeGroupsText2').innerText = freeGroups + " Groups Left";
-  document.getElementById('spotsLeftText').innerText = spotsLeft + " Spots Left in Group " + myGroup;
-  document.getElementById('spotsLeftTable').innerText = spotsLeft + " Spots Left";
-  let pct = Math.min(95, 5 + all.length * 2);
-  document.getElementById('trustFill').style.width = pct + '%';
-}
-
-function joinGame(){
-  myName = document.getElementById('playerName').value.trim();
-  myGroup = document.getElementById('groupId').value.trim() || "49";
-  if(!myName){ alert("Please type your name"); return; }
-  let all = getAllPlayers();
-  if(!all.find(p=>p.name===myName && String(p.group)===String(myGroup))){
-    all.push({name: myName, group: myGroup, time: Date.now()});
-    saveAllPlayers(all);
+  if (spotsLeft <= 0) {
+    document.getElementById('joinBtn').innerText = 'GROUP 49 FULL - JOIN GROUP 50';
+    document.getElementById('msg').innerText = 'Group 49 is FULL (16/16). Next group opening...';
   }
-  document.getElementById('joinBox').style.display = 'none';
-  document.getElementById('gameBox').style.display = 'block';
-  document.getElementById('welcomeText').innerText = "You are here as " + myName + " (" + myGroup + ") Captain of Group " + myGroup + " | Group " + myGroup + " - Captain: " + myName;
-  document.getElementById('link1').value = "https://tajo-worldgamescreate.vercel.app/";
-  document.getElementById('link2').value = "https://tajo-worldgamescreate.vercel.app/group/" + myGroup;
-  updateTrustBar();
-  updatePlayers();
 }
 
-function updatePlayers(){
-  let all = getAllPlayers();
-  let inMyGroup = all.filter(p => String(p.group) === String(myGroup));
-  if(!inMyGroup.find(p=>p.name===myName)) inMyGroup.unshift({name: myName, group: myGroup});
-  let spotsLeft = Math.max(0, TOTAL_SPOTS - inMyGroup.length);
-  let html = inMyGroup.map(p => '<div class="online"><div class="avatar">' + p.name.charAt(0).toUpperCase() + '</div><div><b>' + p.name + ' (' + myGroup + ')' + (p.name===myName ? ' Captain' : '') + '</b><div class="small">Online</div></div></div>').join('');
-  html += '<div style="background:#C8F5D6; padding:10px; border-radius:8px; margin-top:8px; font-weight:bold;">' + inMyGroup.length + ' Online in Group ' + myGroup + ': ' + inMyGroup.map(p=>p.name).join(', ') + ' - ' + spotsLeft + ' Spots Left</div>';
-  html += '<div style="background:#FFF3CD; padding:10px; border-radius:8px; margin-top:8px; font-size:13px;">🔥 Total in TAJO WORLD: <b>' + (BASE_JOINED + all.length).toLocaleString() + ' joined</b> - You are part of it!</div>';
-  document.getElementById('playersList').innerHTML = html;
+function joinGroup() {
+  if (groupCount < GROUP_SIZE) {
+    groupCount++;
+    totalJoined++;
+    updateDisplay();
+    document.getElementById('msg').innerText = 'Welcome! You joined Group 49. ' + (GROUP_SIZE - groupCount) + ' spots left out of 16!';
+    document.querySelector('.top').innerText = '🔥 LIVE NOW - ' + totalJoined + ' People Already Joined!';
+  } else {
+    // Group 49 full, move to next group
+    occupiedGroups++;
+    groupCount = 1;
+    updateDisplay();
+    document.getElementById('msg').innerText = 'Group 49 was FULL. You joined Group ' + (TOTAL_GROUPS - (TOTAL_GROUPS - occupiedGroups) + 1) + '!';
+  }
 }
 
-function copyLink(id){
-  let el = document.getElementById(id);
-  el.select(); document.execCommand('copy');
-  alert("Link copied!");
-}
-
-function shareGame(){
-  let url = "https://tajo-worldgamescreate.vercel.app/";
-  if(navigator.share){ navigator.share({title:"TAJO Truth and Dare", text:"Join my TAJO game! " + (BASE_JOINED + getAllPlayers().length) + " people already joined! Only " + (TOTAL_SPOTS - getAllPlayers().filter(p=>String(p.group)===String(myGroup)).length) + " spots left in Group " + myGroup, url:url}); }
-  else { prompt("Copy this link:", url); }
-}
-
-const truths = ["What is your biggest secret?", "Who is your crush?", "What is the most embarrassing thing you have done?", "What is one thing you have never told anyone?", "What is your biggest fear?", "Have you ever lied to your best friend?", "What is the craziest thing you have done for love?", "Who do you secretly stalk on social media?"];
-const dares = ["Dance for 30 seconds", "Sing a song out loud", "Do 10 push-ups", "Call someone and say you miss them", "Do your best animal impression", "Text your crush 'hi'", "Speak in a funny accent for 1 minute", "Let the group choose your profile pic for 1 hour"];
-
-function pick(type){
-  if(myPick){ alert("You already picked. Press I Answered to unlock."); return; }
-  myPick = type;
-  let q = type === 'Truth' ? truths[Math.floor(Math.random()*truths.length)] : dares[Math.floor(Math.random()*dares.length)];
-  document.getElementById('questionBox').style.display = 'block';
-  document.getElementById('questionText').innerText = type + ": " + q;
-  document.getElementById('lastTurn').innerText = myName + " picked " + type;
-  document.getElementById('truthBtn').style.opacity = "0.5";
-  document.getElementById('dareBtn').style.opacity = "0.5";
-}
-
-function nextPerson(){
-  myPick = "";
-  document.getElementById('questionBox').style.display = 'none';
-  document.getElementById('truthBtn').style.opacity = "1";
-  document.getElementById('dareBtn').style.opacity = "1";
-  alert("Unlocked! Next person can pick now.");
-}
-
-function startVideo(){ alert("Video mode started - 1 Hour"); }
-function endGame(){ if(confirm("End game?")){ location.reload(); } }
-
-let params = new URLSearchParams(location.search);
-if(params.get('group')){ document.getElementById('groupId').value = params.get('group'); myGroup = params.get('group'); }
-updateTrustBar();
+updateDisplay();
 </script>
+
 </body>
 </html>
