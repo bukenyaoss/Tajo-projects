@@ -17,12 +17,16 @@ h1 span { color:#00ff88; }
 .big-green { color:#00ff88; font-weight:bold; font-size:26px; }
 .big-white { font-weight:bold; font-size:26px; }
 .progress-bar { background:#333; height:12px; border-radius:10px; overflow:hidden; margin:12px 0; }
-.progress-fill { background:#00ff88; height:100%; width:2%; }
+.progress-fill { background:#00ff88; height:100%; width:0%; }
 .stats { display:flex; justify-content:space-between; background:#2a2a3a; padding:12px; border-radius:10px; margin:12px 0; text-align:center; }
 .stats div b { display:block; font-size:20px; }
 .stats div span { font-size:12px; color:#aaa; }
 .group-card { background:#2a2a3a; border:2px solid #00ff88; border-radius:15px; padding:18px; margin-top:15px; }
 .group-card h3 { color:#00ff88; margin-bottom:8px; }
+.group-name { color:#FFD700; font-weight:bold; font-size:18px; margin:5px 0; }
+.occupied-list { background:#2a2a3a; border-radius:12px; padding:12px; margin-top:15px; text-align:left; }
+.occupied-list h4 { color:#ff4757; margin-bottom:8px; }
+.occupied-list p { font-size:14px; margin:4px 0; }
 .join-btn { background:#00ff88; color:#000; border:none; width:100%; padding:15px; border-radius:12px; font-size:18px; font-weight:bold; cursor:pointer; margin-top:15px; }
 .join-btn:active { transform:scale(0.98); }
 .join-btn:disabled { background:#555; color:#999; }
@@ -37,7 +41,7 @@ h1 span { color:#00ff88; }
 </head>
 <body>
 
-<div class="top">🔥 LIVE NOW - 1,247 People Already Joined!</div>
+<div class="top">🔥 LIVE NOW - <span id="totalJoinedTop">1</span> People Already Joined!</div>
 
 <h1>🌍 TAJO <span>WORLD</span></h1>
 <p class="subtitle">The Biggest Games Community in Uganda<br>Truth or Dare • Would You Rather • Riddles & More</p>
@@ -46,29 +50,35 @@ h1 span { color:#00ff88; }
 <h2>🎮 Join TAJO WORLD Games</h2>
 <p>Be part of the fastest growing games community. Groups are filling fast!</p>
 
-<p><span class="big-green" id="freeGroupsTop">49</span> <b>Groups Left FREE</b></p>
+<p><span class="big-green" id="freeGroupsTop">50</span> <b>Groups Left FREE</b></p>
 
 <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-<p><span id="percentText">2%</span> Full - <span id="freeGroupsText">49</span> still FREE!</p>
+<p><span id="percentText">0%</span> Full - <span id="freeGroupsText">50</span> still FREE!</p>
 
 <div class="stats">
 <div><b id="totalGroups">50</b><span>Total</span></div>
-<div><b id="occupiedGroups">1</b><span>Occupied</span></div>
-<div><b id="freeGroups">49</b><span>Free</span></div>
+<div><b id="occupiedGroups">0</b><span>Occupied</span></div>
+<div><b id="freeGroups">50</b><span>Free</span></div>
 </div>
 
 <div class="group-card">
-<h3>⭐ Group 49 - Almost Full!</h3>
+<h3 id="currentGroupTitle">⭐ Group 1 - OPEN!</h3>
+<p class="group-name" id="currentGroupName">Name: TAJO WORLD 1</p>
 <p>Every group has <b>16 members</b> - same for all groups, constant.</p>
-<p><span class="big-white" id="spotsLeft">15</span> <b>Spots Left in Group 49</b></p>
-<p><span id="joinedCount">1</span> member joined • <span id="leftCount">15</span> empty chairs left out of 16</p>
-<p style="font-size:13px; color:#aaa;">🪑 16 chairs in Group 49. 1 person is sitting. 15 chairs are still empty for your friends.</p>
+<p><span class="big-white" id="spotsLeft">16</span> <b>Spots Left in Group 1</b></p>
+<p><span id="joinedCount">0</span> member joined • <span id="leftCount">16</span> empty chairs left out of 16</p>
 </div>
 
-<button class="join-btn" id="joinBtn" onclick="joinGroup()">JOIN GROUP 49 NOW 🚀</button>
+<!-- THIS IS THE FIX: OCCUPIED GROUP NAMES NOW SHOW -->
+<div class="occupied-list">
+<h4>🔒 Occupied Groups:</h4>
+<div id="occupiedList"><p style="color:#aaa;">No group is full yet. Be the first!</p></div>
+</div>
+
+<button class="join-btn" id="joinBtn" onclick="joinGroup()">JOIN GROUP 1 NOW 🚀</button>
 <p id="msg"></p>
 
-<div class="urgent">⚡ Hurry! Only <span id="urgentSpots">15</span> spots left in Group 49. When it's full, you go to Group 50.</div>
+<div class="urgent">⚡ Hurry! Only <span id="urgentSpots">16</span> spots left in Group <span id="urgentGroup">1</span>.</div>
 </div>
 
 <div class="games">
@@ -81,35 +91,39 @@ h1 span { color:#00ff88; }
 <p class="footer">© 2026 TAJO WORLD • Made in Uganda 🇺🇬<br>Total Capacity: 50 Groups × 16 Members = 800 Players</p>
 
 <script>
-// ===== TAJO WORLD SETTINGS - CONSTANT FOR ALL GROUPS =====
 const TOTAL_GROUPS = 50;
-const GROUP_SIZE = 16; // 16 members in EVERY group - constant, never changes
-let occupiedGroups = 1;
-let groupCount = 1; // 1 person already in Group 49
-let totalJoined = 1247;
+const GROUP_SIZE = 16;
+let currentGroup = 1;
+let groupCount = 0;
+let occupiedGroups = 0;
+let totalJoined = 0;
+let occupiedNames = [];
 
 function updateDisplay() {
-  let freeGroups = TOTAL_GROUPS - occupiedGroups; // 50 - 1 = 49
-  let spotsLeft = GROUP_SIZE - groupCount; // 16 - 1 = 15
-
+  let freeGroups = TOTAL_GROUPS - occupiedGroups;
+  let spotsLeft = GROUP_SIZE - groupCount;
   document.getElementById('freeGroupsTop').innerText = freeGroups;
   document.getElementById('freeGroups').innerText = freeGroups;
   document.getElementById('freeGroupsText').innerText = freeGroups;
   document.getElementById('occupiedGroups').innerText = occupiedGroups;
   document.getElementById('totalGroups').innerText = TOTAL_GROUPS;
-
   document.getElementById('spotsLeft').innerText = spotsLeft;
   document.getElementById('joinedCount').innerText = groupCount;
   document.getElementById('leftCount').innerText = spotsLeft;
   document.getElementById('urgentSpots').innerText = spotsLeft;
-
+  document.getElementById('urgentGroup').innerText = currentGroup;
+  document.getElementById('currentGroupTitle').innerText = '⭐ Group ' + currentGroup + ' - OPEN!';
+  document.getElementById('currentGroupName').innerText = 'Name: TAJO WORLD ' + currentGroup;
+  document.getElementById('totalJoinedTop').innerText = totalJoined;
   let percent = Math.round((occupiedGroups / TOTAL_GROUPS) * 100);
   document.getElementById('percentText').innerText = percent + '%';
   document.getElementById('progressFill').style.width = percent + '%';
-
-  if (spotsLeft <= 0) {
-    document.getElementById('joinBtn').innerText = 'GROUP 49 FULL - JOIN GROUP 50';
-    document.getElementById('msg').innerText = 'Group 49 is FULL (16/16). Next group opening...';
+  document.getElementById('joinBtn').innerText = 'JOIN GROUP ' + currentGroup + ' NOW 🚀';
+  // Show occupied group NAMES - this was missing before
+  if (occupiedNames.length === 0) {
+    document.getElementById('occupiedList').innerHTML = '<p style="color:#aaa;">No group is full yet. Be the first!</p>';
+  } else {
+    document.getElementById('occupiedList').innerHTML = occupiedNames.map(n => '<p>🔒 ' + n + ' - 16/16 FULL</p>').join('');
   }
 }
 
@@ -117,20 +131,23 @@ function joinGroup() {
   if (groupCount < GROUP_SIZE) {
     groupCount++;
     totalJoined++;
+    if (groupCount === GROUP_SIZE) {
+      occupiedNames.push('TAJO WORLD ' + currentGroup);
+      occupiedGroups++;
+      document.getElementById('msg').innerText = 'Group ' + currentGroup + ' is now FULL (16/16)! Opening Group ' + (currentGroup + 1) + '...';
+      currentGroup++;
+      groupCount = 0;
+      if (currentGroup > TOTAL_GROUPS) {
+        document.getElementById('joinBtn').disabled = true;
+        document.getElementById('joinBtn').innerText = 'ALL GROUPS FULL';
+      }
+    } else {
+      document.getElementById('msg').innerText = 'Welcome! You joined Group ' + currentGroup + '. ' + (GROUP_SIZE - groupCount) + ' spots left out of 16!';
+    }
     updateDisplay();
-    document.getElementById('msg').innerText = 'Welcome! You joined Group 49. ' + (GROUP_SIZE - groupCount) + ' spots left out of 16!';
-    document.querySelector('.top').innerText = '🔥 LIVE NOW - ' + totalJoined + ' People Already Joined!';
-  } else {
-    // Group 49 full, move to next group
-    occupiedGroups++;
-    groupCount = 1;
-    updateDisplay();
-    document.getElementById('msg').innerText = 'Group 49 was FULL. You joined Group ' + (TOTAL_GROUPS - (TOTAL_GROUPS - occupiedGroups) + 1) + '!';
   }
 }
-
 updateDisplay();
 </script>
-
 </body>
 </html>
