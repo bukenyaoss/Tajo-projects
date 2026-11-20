@@ -3,112 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAJO TRADE FLOW - AI Signals</title>
+<title>TAJO - Truth and Dare</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-  body{background:#0a0e17;color:#fff;padding:16px}
-  .header{text-align:center;padding:20px 0}
-  .header h1{font-size:28px;letter-spacing:2px}
-  .header h1 span{color:#00e676}
-  .header p{color:#888;font-size:13px;margin-top:6px}
-  .live{color:#00e676;font-size:12px}
-  .card{background:#141a29;border:1px solid #222c42;border-radius:16px;padding:16px;margin:12px 0}
-  .top{display:flex;justify-content:space-between;align-items:center}
-  .pair{font-size:20px;font-weight:800}
-  .price{font-size:22px;font-weight:800}
-  .up{color:#00e676}.down{color:#ff3b5c}
-  .badge{padding:6px 14px;border-radius:20px;font-weight:800;font-size:13px}
-  .buy{background:#00e676;color:#000}.sell{background:#ff3b5c;color:#fff}.wait{background:#ffcc00;color:#000}
-  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:14px 0;text-align:center}
-  .box{background:#0a0e17;padding:10px;border-radius:10px;border:1px solid #222c42}
-  .box small{color:#888;display:block;font-size:11px}
-  .box b{font-size:14px}
-  .reasons{background:#0a0e17;border-left:3px solid #00e676;padding:10px 12px;border-radius:8px;font-size:13px;line-height:1.6;margin-top:10px}
-  .reasons b{color:#00e676}
-  .locked{color:#00e676;font-size:11px;font-weight:700}
-  button{width:100%;padding:14px;border:0;border-radius:12px;background:#00e676;color:#000;font-weight:900;font-size:16px;cursor:pointer;margin-top:8px}
-  select{width:100%;padding:12px;border-radius:10px;background:#0a0e17;color:#fff;border:1px solid #222c42;margin:10px 0}
-  .footer{text-align:center;color:#555;font-size:11px;margin:20px 0}
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+  body { margin: 0; background: #FFF8DC; padding: 16px; padding-bottom: 80px; }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .logo { background: #FFD700; border: 2px solid #000; border-radius: 50%; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
+  .yellow-box { background: #FFD700; padding: 14px; border-radius: 10px; margin-top: 12px; font-weight: bold; }
+  .card { background: #fff; border-radius: 12px; padding: 14px; margin-top: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .link-row { display: flex; gap: 8px; margin-top: 10px; }
+  .link-row input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; }
+  .btn-yellow { background: #FFD700; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+  .btn-pink { background: #FFC0CB; border: none; padding: 16px; border-radius: 10px; font-weight: bold; flex: 1; font-size: 16px; cursor: pointer; }
+  .btn-gold { background: #FFD700; border: none; padding: 16px; border-radius: 10px; font-weight: bold; flex: 1; font-size: 16px; cursor: pointer; }
+  .btn-green { background: #C8F5D6; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+  .btn-grey { background: #E5E5E5; border: none; padding: 14px; border-radius: 10px; font-weight: bold; flex: 1; cursor: pointer; }
+  .btn-teal { background: #A8E6CF; border: none; padding: 14px; border-radius: 10px; font-weight: bold; flex: 1; cursor: pointer; }
+  .row { display: flex; gap: 10px; margin-top: 12px; }
+  .online { background: #FFF3CD; padding: 10px; border-radius: 8px; display: flex; gap: 10px; align-items: center; margin-top: 8px; }
+  .avatar { background: #FFD700; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+  .small { font-size: 13px; color: #555; }
+  .pink-text { color: #E91E63; font-weight: bold; letter-spacing: 1px; font-size: 12px; }
+  input.name-input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px; }
+  .live-badge { background: #25D366; color: white; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+  .trust-bar { background: #FF0080; color: white; padding: 12px; border-radius: 12px; margin-top: 12px; text-align: center; }
+  .trust-bar b { font-size: 17px; }
+  .trust-progress { background: rgba(255,255,255,0.35); height: 10px; border-radius: 10px; margin-top: 8px; overflow: hidden; }
+  .trust-fill { background: #FFD700; height: 10px; border-radius: 10px; width: 5%; }
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>TAJO <span>TRADE FLOW</span></h1>
-  <p>AI • SNR + CRT • Fixed Entry</p>
-  <p class="live">● LIVE • Updated <span id="time">--:--:--</span></p>
+
+<div class="top">
+  <div><b>TAJO</b><div class="small">Developer group</div></div>
+  <div class="logo">T</div>
 </div>
 
-<select id="pairSelect" onchange="generate()">
-  <option value="EUR/USD">EUR/USD - Forex</option>
-  <option value="GBP/USD">GBP/USD - Forex</option>
-  <option value="XAU/USD">XAU/USD - Gold</option>
-  <option value="BTC/USD">BTC/USD - Crypto</option>
-  <option value="USD/JPY">USD/JPY - Forex</option>
-</select>
+<!-- HOW MANY JOINED - DECREASING FREE NUMBERS -->
+<div class="trust-bar">
+  🔥 <b><span id="totalJoined">1,247</span> People Already Joined!</b><br>
+  <span style="font-size:13px;">👥 <span id="groupJoined">0</span> / 10 Joined in Group <span id="groupJoinedNum">49</span> • 🟢 <span id="onlineNow">1</span> Online Now</span>
+  <div style="font-size:14px; margin-top:8px; font-weight:bold; background:rgba(0,0,0,0.2); padding:8px; border-radius:8px;">
+    🟢 <span id="freeGroupsText">49 Groups Left FREE</span><br>
+    🔥 <span id="spotsLeftText">9 Spots Left in Group 49</span>
+  </div>
+  <div class="trust-progress"><div class="trust-fill" id="trustFill"></div></div>
+  <div style="font-size:12px; margin-top:6px;">Join now - Don't be left out! • <span id="todayJoined">12</span> joined today</div>
+</div>
 
-<div id="app"></div>
-<button onclick="generate()">🔄 GENERATE NEW SIGNAL</button>
-<p style="text-align:center;color:#888;font-size:12px;margin-top:10px">Entry locks when signal is generated. New signal only after TP/SL or new candle.</p>
-<div class="footer">TAJO TRADE FLOW © 2026 • Not financial advice • Trade responsibly</div>
+<div id="joinBox" class="card">
+  <b>Join TAJO - Truth and Dare</b>
+  <p class="small">Your game - https://tajo-worldgamescreate.vercel.app/</p>
+  <input id="playerName" class="name-input" placeholder="Type your name">
+  <input id="groupId" class="name-input" placeholder="Group number - example 49" value="49">
+  <button class="btn-yellow" style="width:100%; margin-top:10px; padding:14px;" onclick="joinGame()">Join Game</button>
+  <p class="small" style="text-align:center; margin-top:10px;">👀 <span id="joinPageCount">1,247</span> people have already joined TAJO WORLD • <span id="freeGroupsText2">49 Groups Left</span></p>
+</div>
+
+<div id="gameBox" style="display:none;">
+  <div class="yellow-box" id="welcomeText">You are here as Tajo</div>
+
+  <div class="card">
+    <b>Your 2 Links</b>
+    <div class="link-row"><input id="link1" readonly><button class="btn-yellow" onclick="copyLink('link1')">Copy</button></div>
+    <div class="link-row"><input id="link2" readonly><button class="btn-yellow" onclick="copyLink('link2')">Copy</button></div>
+    <p class="small">This is YOUR group's link. Share it ONLY to people you want in YOUR group. Each group has its own number link.</p>
+  </div>
+
+  <div class="card">
+    <b>AT THE TABLE - WHO IS ONLINE (<span id="tableCount">1</span> / 10) - <span id="spotsLeftTable">9 Spots Left</span></b>
+    <div id="playersList"></div>
+    <div class="row">
+      <button class="btn-teal" onclick="startVideo()">Video - Try 16 / Safe 7 - 1 Hour</button>
+      <button class="btn-grey" onclick="endGame()">End</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="pink-text">A LITTLE GAME, A LOT OF STORIES</div>
+    <h2 style="margin:8px 0;">Pick your side.</h2>
+    <p class="small">Pick ONCE - Then ALL lock until done</p>
+    <div class="row">
+      <button class="btn-pink" id="truthBtn" onclick="pick('Truth')">Truth</button>
+      <button class="btn-gold" id="dareBtn" onclick="pick('Dare')">Dare</button>
+    </div>
+    <div class="card" style="background:#F8F8F8; margin-top:12px;"><b>Last Turn: </b><span id="lastTurn">None</span></div>
+    <div id="questionBox" class="card" style="display:none; background:#FFF3CD;"><b id="questionText"></b></div>
+    <button class="btn-green" onclick="nextPerson()">I Answered - Next Person (UNLOCKS ALL)</button>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <span class="live-badge">● LIVE ON VERCEL</span>
+    <p class="small" style="margin-top:10px;">tajo-worldgamescreate.vercel.app</p>
+    <button class="btn-yellow" style="width:100%;" onclick="shareGame()">Share Game Link</button>
+  </div>
+</div>
 
 <script>
-let lockedEntry = null, lockedTime = null, currentSignal = null;
+let myName = "";
+let myGroup = "49";
+let myPick = "";
+let BASE_JOINED = 1247;
+let TOTAL_GROUPS = 50;
+let TOTAL_SPOTS = 10;
 
-function random(min,max){ return Math.random()*(max-min)+min; }
-
-function generate(){
-  const pair = document.getElementById('pairSelect').value;
-  let basePrice = pair==='BTC/USD'? 97000 : pair==='XAU/USD'? 2650 : pair==='USD/JPY'? 154.2 : pair==='GBP/USD'? 1.27 : 1.08;
-  let price = basePrice + random(-0.01,0.01)* (pair==='BTC/USD'?100:1);
-  
-  // CRT + SNR Logic Simulation
-  const crtTypes = ['Bullish CRT - Sweep of Low + Reclaim','Bearish CRT - Sweep of High + Reclaim','No Clean CRT - Choppy'];
-  const crt = crtTypes[Math.floor(Math.random()*crtTypes.length)];
-  const nearSNR = Math.random() > 0.3;
-  
-  let signal, conf, reasons, tp, sl, status;
-  
-  if(!nearSNR || crt.includes('No Clean')){
-    signal='NO TRADE'; conf=Math.floor(random(40,55));
-    reasons = [`1) Price is in the middle - NOT near SNR`, `2) ${crt}`, `3) Crossing / Choppy - STOP CROSS filter blocked trade`];
-    tp=price; sl=price; status='wait';
-  } else if(crt.includes('Bullish')){
-    signal='BUY'; conf=Math.floor(random(72,92));
-    reasons = [`1) ${crt} at Support (SNR)`, `2) Price reclaimed range - buyers in control`, `3) Higher low formed above Support`];
-    tp=price*1.003; sl=price*0.0015; status='buy';
-  } else {
-    signal='SELL'; conf=Math.floor(random(72,92));
-    reasons = [`1) ${crt} at Resistance (SNR)`, `2) Price rejected range - sellers in control`, `3) Lower high formed below Resistance`];
-    tp=price*0.997; sl=price*1.0015; status='sell';
-  }
-
-  // FIXED ENTRY - Lock it
-  lockedEntry = price.toFixed(pair==='BTC/USD'?2:5);
-  lockedTime = new Date().toLocaleTimeString();
-  currentSignal = signal;
-
-  document.getElementById('time').innerText = new Date().toLocaleTimeString();
-  
-  const color = status==='buy'?'up':status==='sell'?'down':'';
-  const badgeClass = status==='buy'?'buy':status==='sell'?'sell':'wait';
-
-  document.getElementById('app').innerHTML = `
-  <div class="card">
-    <div class="top"><span class="pair">${pair}</span><span class="badge ${badgeClass}">${signal}</span></div>
-    <div class="top" style="margin-top:10px"><span style="color:#888;font-size:13px">Live Price</span><span class="price ${color}">${price.toFixed(pair==='BTC/USD'?2:5)}</span></div>
-    <div class="grid">
-      <div class="box"><small>ENTRY 🔒 LOCKED</small><b>${lockedEntry}</b><span class="locked">LOCKED ${lockedTime}</span></div>
-      <div class="box"><small>TAKE PROFIT</small><b class="up">${tp.toFixed(pair==='BTC/USD'?2:5)}</b></div>
-      <div class="box"><small>STOP LOSS</small><b class="down">${sl.toFixed(pair==='BTC/USD'?2:5)}</b></div>
-    </div>
-    <div style="display:flex;justify-content:space-between"><span>Confidence / Win Rate</span><b class="up">${conf}%</b></div>
-    <div class="reasons"><b>Why ${conf}% ?</b><br>${reasons.join('<br>')}</div>
-    <div class="reasons" style="border-left-color:#ffcc00"><b>Strategy:</b><br>SNR + CRT • ${crt}<br>Fixed Entry • No repaint while locked</div>
-  </div>`;
+function getAllPlayers(){
+  try{ return JSON.parse(localStorage.getItem('tajo_all_players') || '[]'); }catch(e){ return []; }
 }
-generate();
-// Live price tick but ENTRY stays locked
-setInterval(()=>{ document.getElementById('time').innerText = new Date().toLocaleTimeString(); },1000);
+function saveAllPlayers(list){ localStorage.setItem('tajo_all_players', JSON.stringify(list)); }
+
+function updateTrustBar(){
+  let all = getAllPlayers();
+  let total = BASE_JOINED + all.length;
+
+  // How many in MY group 49
+  let inMyGroup = all.filter(p => String(p.group) === String(myGroup));
+  let groupCount = inMyGroup.length;
+  if(myName && !inMyGroup.find(p=>p.name===myName)) groupCount = groupCount + 1;
+
+  // MATH - DECREASING:
+  // Free Groups = 50 - Occupied Groups. 1 joins = 49 left, 2 joins = 48 left
+  let occupiedGroups = new Set(all.map(p=>String(p.group))).size;
+  if(myName && !all.find(p=>String(p.group)===String(myGroup))) occupiedGroups = occupiedGroups + 1;
+  if(occupiedGroups === 0) occupiedGroups = 1;
+  let freeGroups = TOTAL_GROUPS - occupiedGroups;
+
+  // Spots Left in Group 49 = 10 - Joined. 1 joins = 9 left, 2 joins = 8 left
+  let spotsLeft = TOTAL_SPOTS - groupCount;
+  if(spotsLeft < 0) spotsLeft = 0;
+
+  document.getElementById('totalJoined').innerText = total.toLocaleString();
+  document.getElementById('joinPageCount').innerText = total.toLocaleString();
+  document.getElementById('groupJoined').innerText = groupCount;
+  document.getElementById('groupJoinedNum').innerText = myGroup;
+  document.getElementById('tableCount').innerText = Math.max(1, groupCount);
+  document.getElementById('onlineNow').innerText = Math.max(1, groupCount);
+  document.getElementById('todayJoined').innerText = 12 + all.length;
+  document.getElementById('freeGroupsText').innerText = freeGroups + " Groups Left FREE";
+  document.getElementById('freeGroupsText2').innerText = freeGroups + " Groups Left";
+  document.getElementById('spotsLeftText').innerText = spotsLeft + " Spots Left in Group " + myGroup;
+  document.getElementById('spotsLeftTable').innerText = spotsLeft + " Spots Left";
+  let pct = Math.min(95, 5 + all.length * 2);
+  document.getElementById('trustFill').style.width = pct + '%';
+}
+
+function joinGame(){
+  myName = document.getElementById('playerName').value.trim();
+  myGroup = document.getElementById('groupId').value.trim() || "49";
+  if(!myName){ alert("Please type your name"); return; }
+  let all = getAllPlayers();
+  if(!all.find(p=>p.name===myName && String(p.group)===String(myGroup))){
+    all.push({name: myName, group: myGroup, time: Date.now()});
+    saveAllPlayers(all);
+  }
+  document.getElementById('joinBox').style.display = 'none';
+  document.getElementById('gameBox').style.display = 'block';
+  document.getElementById('welcomeText').innerText = "You are here as " + myName + " (" + myGroup + ") Captain of Group " + myGroup + " | Group " + myGroup + " - Captain: " + myName;
+  document.getElementById('link1').value = "https://tajo-worldgamescreate.vercel.app/";
+  document.getElementById('link2').value = "https://tajo-worldgamescreate.vercel.app/group/" + myGroup;
+  updateTrustBar();
+  updatePlayers();
+}
+
+function updatePlayers(){
+  let all = getAllPlayers();
+  let inMyGroup = all.filter(p => String(p.group) === String(myGroup));
+  if(!inMyGroup.find(p=>p.name===myName)) inMyGroup.unshift({name: myName, group: myGroup});
+  let spotsLeft = Math.max(0, TOTAL_SPOTS - inMyGroup.length);
+  let html = inMyGroup.map(p => '<div class="online"><div class="avatar">' + p.name.charAt(0).toUpperCase() + '</div><div><b>' + p.name + ' (' + myGroup + ')' + (p.name===myName ? ' Captain' : '') + '</b><div class="small">Online</div></div></div>').join('');
+  html += '<div style="background:#C8F5D6; padding:10px; border-radius:8px; margin-top:8px; font-weight:bold;">' + inMyGroup.length + ' Online in Group ' + myGroup + ': ' + inMyGroup.map(p=>p.name).join(', ') + ' - ' + spotsLeft + ' Spots Left</div>';
+  html += '<div style="background:#FFF3CD; padding:10px; border-radius:8px; margin-top:8px; font-size:13px;">🔥 Total in TAJO WORLD: <b>' + (BASE_JOINED + all.length).toLocaleString() + ' joined</b> - You are part of it!</div>';
+  document.getElementById('playersList').innerHTML = html;
+}
+
+function copyLink(id){
+  let el = document.getElementById(id);
+  el.select(); document.execCommand('copy');
+  alert("Link copied!");
+}
+
+function shareGame(){
+  let url = "https://tajo-worldgamescreate.vercel.app/";
+  if(navigator.share){ navigator.share({title:"TAJO Truth and Dare", text:"Join my TAJO game! " + (BASE_JOINED + getAllPlayers().length) + " people already joined! Only " + (TOTAL_SPOTS - getAllPlayers().filter(p=>String(p.group)===String(myGroup)).length) + " spots left in Group " + myGroup, url:url}); }
+  else { prompt("Copy this link:", url); }
+}
+
+const truths = ["What is your biggest secret?", "Who is your crush?", "What is the most embarrassing thing you have done?", "What is one thing you have never told anyone?", "What is your biggest fear?", "Have you ever lied to your best friend?", "What is the craziest thing you have done for love?", "Who do you secretly stalk on social media?"];
+const dares = ["Dance for 30 seconds", "Sing a song out loud", "Do 10 push-ups", "Call someone and say you miss them", "Do your best animal impression", "Text your crush 'hi'", "Speak in a funny accent for 1 minute", "Let the group choose your profile pic for 1 hour"];
+
+function pick(type){
+  if(myPick){ alert("You already picked. Press I Answered to unlock."); return; }
+  myPick = type;
+  let q = type === 'Truth' ? truths[Math.floor(Math.random()*truths.length)] : dares[Math.floor(Math.random()*dares.length)];
+  document.getElementById('questionBox').style.display = 'block';
+  document.getElementById('questionText').innerText = type + ": " + q;
+  document.getElementById('lastTurn').innerText = myName + " picked " + type;
+  document.getElementById('truthBtn').style.opacity = "0.5";
+  document.getElementById('dareBtn').style.opacity = "0.5";
+}
+
+function nextPerson(){
+  myPick = "";
+  document.getElementById('questionBox').style.display = 'none';
+  document.getElementById('truthBtn').style.opacity = "1";
+  document.getElementById('dareBtn').style.opacity = "1";
+  alert("Unlocked! Next person can pick now.");
+}
+
+function startVideo(){ alert("Video mode started - 1 Hour"); }
+function endGame(){ if(confirm("End game?")){ location.reload(); } }
+
+let params = new URLSearchParams(location.search);
+if(params.get('group')){ document.getElementById('groupId').value = params.get('group'); myGroup = params.get('group'); }
+updateTrustBar();
 </script>
 </body>
 </html>
